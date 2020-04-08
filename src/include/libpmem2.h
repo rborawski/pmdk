@@ -111,6 +111,15 @@ void pmem2_badblock_context_delete(
 int pmem2_badblock_clear(struct pmem2_badblock_context *bbctx,
 		const struct pmem2_badblock *bb);
 
+/* virtual memory reservation setup */
+
+struct pmem2_vm_reservation;
+
+int pmem2_vm_reservation_new(struct pmem2_vm_reservation **rsv,
+		void *addr, size_t length);
+
+int pmem2_vm_reservation_delete(struct pmem2_vm_reservation **rsv);
+
 /* config setup */
 
 struct pmem2_config;
@@ -122,6 +131,9 @@ int pmem2_config_delete(struct pmem2_config **cfg);
 int pmem2_config_set_offset(struct pmem2_config *cfg, size_t offset);
 
 int pmem2_config_set_length(struct pmem2_config *cfg, size_t length);
+
+int pmem2_config_set_vm_reservation(struct pmem2_config *cfg,
+		struct pmem2_vm_reservation *rsv, size_t offset);
 
 enum pmem2_sharing_type {
 	PMEM2_SHARED,

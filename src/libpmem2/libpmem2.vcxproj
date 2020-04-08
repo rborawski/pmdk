@@ -34,6 +34,7 @@
     <ClCompile Include="source.c" />
     <ClCompile Include="source_windows.c" />
     <ClCompile Include="usc_windows.c" />
+    <ClCompile Include="vm_reservation_windows.c" />
     <ClCompile Include="x86_64\cpu.c" />
     <ClCompile Include="x86_64\init.c" />
     <ClCompile Include="x86_64\memcpy\memcpy_nt_sse2.c" />
@@ -68,6 +69,7 @@
     <ClInclude Include="pmem2_arch.h" />
     <ClInclude Include="pmem2_utils.h" />
     <ClInclude Include="source.h" />
+    <ClInclude Include="vm_reservation.h" />
     <ClInclude Include="x86_64\cpu.h" />
     <ClInclude Include="x86_64\avx.h" />
     <ClInclude Include="x86_64\flush.h" />
@@ -127,8 +129,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);x86_64\</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link />
+    <Link>
+      <AdditionalDependencies>mincore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link />
+    <Link>
+      <AdditionalDependencies>mincore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

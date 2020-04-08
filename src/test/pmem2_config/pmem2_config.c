@@ -10,6 +10,7 @@
 #include "config.h"
 #include "out.h"
 #include "source.h"
+#include "vm_reservation.h"
 
 /*
  * test_cfg_create_and_delete_valid - test pmem2_config allocation
@@ -310,6 +311,40 @@ test_clear_address(const struct test_case *tc, int argc,
 }
 
 /*
+ * test_set_vm_reservation - set addr and rsv in config struct by
+ * usage of pmem2_config_set_vm_reservation func
+ */
+static int
+test_set_vm_reservation(const struct test_case *tc, int argc,
+	char *argv[])
+{
+	struct pmem2_config cfg;
+	struct pmem2_vm_reservation *rsv = NULL;
+
+	/* "randomly" chosen value of len */
+	size_t len = Ut_mmap_align;
+	void *addr = NULL;
+
+	int ret = pmem2_vm_reservation_new(&rsv, addr, len);
+	UT_ASSERTeq(ret, 0);
+	UT_ASSERTne(rsv, NULL);
+
+	/* "randomly" chosen value of offset */
+	size_t offset = Ut_mmap_align;
+
+	ret = pmem2_config_set_vm_reservation(&cfg, rsv, offset);
+	UT_ASSERTeq(ret, 0);
+	UT_ASSERTeq(cfg.addr, (char *)rsv->addr + offset);
+	UT_ASSERTeq(cfg.rsv, rsv);
+
+	ret = pmem2_vm_reservation_delete(&rsv);
+	UT_ASSERTeq(ret, 0);
+	UT_ASSERTeq(rsv, NULL);
+
+	return 0;
+}
+
+/*
  * test_cases -- available test cases
  */
 static struct test_case test_cases[] = {
@@ -328,6 +363,7 @@ static struct test_case test_cases[] = {
 	TEST_CASE(test_set_wrong_addr_req_type),
 	TEST_CASE(test_null_addr_noreplace),
 	TEST_CASE(test_clear_address),
+	TEST_CASE(test_set_vm_reservation),
 };
 
 #define NTESTS (sizeof(test_cases) / sizeof(test_cases[0]))

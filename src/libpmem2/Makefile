@@ -26,7 +26,8 @@ SOURCE =\
 	pmem2_utils.c\
 	usc_$(OS_DIMM).c\
 	source.c\
-	source_posix.c
+	source_posix.c\
+	vm_reservation_posix.c
 
 ifeq ($(OS_KERNEL_NAME),Linux)
 SOURCE +=\

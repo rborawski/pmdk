@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "alloc.h"
 #include "config.h"
+#include "vm_reservation.h"
 #include "libpmem2.h"
 #include "out.h"
 #include "pmem2.h"
@@ -25,6 +26,7 @@ pmem2_config_init(struct pmem2_config *cfg)
 	cfg->addr_request = PMEM2_ADDRESS_ANY;
 	cfg->requested_max_granularity = PMEM2_GRANULARITY_INVALID;
 	cfg->sharing = PMEM2_SHARED;
+	cfg->rsv = NULL;
 }
 
 /*
@@ -229,4 +231,18 @@ pmem2_config_clear_address(struct pmem2_config *cfg)
 {
 	cfg->addr = NULL;
 	cfg->addr_request = PMEM2_ADDRESS_ANY;
+}
+
+/*
+ * pmem2_config_set_vm_reservation -- set mapping addr from
+ * reserved memory and save pointer to the rsv struct in the config
+ */
+int
+pmem2_config_set_vm_reservation(struct pmem2_config *cfg,
+		struct pmem2_vm_reservation *rsv, size_t offset)
+{
+	cfg->addr = (char *)rsv->addr + offset;
+	cfg->rsv = rsv;
+
+	return 0;
 }
